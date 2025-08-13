@@ -12,13 +12,14 @@ for df in [df_collins, df_luggage, df_BIF]:
 for df in [df_collins, df_luggage, df_BIF]: 
     df.rename(columns=COLUMNAS_RENAME_TOILETS, inplace=True)
 
-df_collins['Cleaner name'] = df['Cleaner name'].str.split().str[0]
-df_luggage['Cleaner name'] = df['Cleaner name'].str.split().str[0]
-df_BIF['Cleaner name'] = df['Cleaner name'].str.split().str[0]
+for df in [df_collins, df_luggage, df_BIF]:
+    df['Cleaner name'] = df['Cleaner name'].str.split().str[0]
 
-df_collins['Start time'] = pd.to_datetime(df['Start time'])
-df_luggage['Start time'] = pd.to_datetime(df['Start time'])
-df_BIF['Start time'] = pd.to_datetime(df['Start time'])
+for df in [df_collins, df_luggage, df_BIF]:
+    df['Start time'] = pd.to_datetime(df['Start time'], format="%m/%d/%Y %I:%M:%S %p")
+
+for df in [df_collins, df_luggage, df_BIF]:
+    df['Completion time'] = pd.to_datetime(df['Completion time'], format="%m/%d/%Y %I:%M:%S %p")
 
 for df in [df_collins, df_luggage, df_BIF]:
     df['Shift'] = df['Start time'].dt.hour.apply(Apply_Shift)
