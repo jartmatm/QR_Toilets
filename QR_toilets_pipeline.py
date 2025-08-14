@@ -8,20 +8,10 @@ df_BIF = load_file()
 
 for df in [df_collins, df_luggage, df_BIF]:
     df.drop(columns=COLUMNAS_ELIMINAR_TOILETS, errors='ignore', inplace=True)
-
-for df in [df_collins, df_luggage, df_BIF]: 
     df.rename(columns=COLUMNAS_RENAME_TOILETS, inplace=True)
-
-for df in [df_collins, df_luggage, df_BIF]:
     df['Cleaner name'] = df['Cleaner name'].str.split().str[0]
-
-for df in [df_collins, df_luggage, df_BIF]:
     df['Start time'] = pd.to_datetime(df['Start time'], format="%m/%d/%Y %I:%M:%S %p")
-
-for df in [df_collins, df_luggage, df_BIF]:
     df['Completion time'] = pd.to_datetime(df['Completion time'], format="%m/%d/%Y %I:%M:%S %p")
-
-for df in [df_collins, df_luggage, df_BIF]:
     df['Shift'] = df['Start time'].dt.hour.apply(Apply_Shift)
 
 INICIO, FIN = input_date()
@@ -37,3 +27,4 @@ save_multiple_sheets({
     "Luggage": df_luggage,
     "BIF": df_BIF
 })
+
