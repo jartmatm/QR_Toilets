@@ -7,7 +7,6 @@ from reportlab.lib.units import cm
 from funciones import load_file
 from variables import COLUMNAS_ELIMINAR_COMPACTOR, COLUMNAS_RENAME_COMPACTOR
 
-# ===== 1. Cargar y preparar datos =====
 df = load_file()
 df["Start time"] = pd.to_datetime(df["Start time"])
 df["Completion time"] = pd.to_datetime(df["Completion time"])
@@ -16,17 +15,13 @@ df['Day name'] = df['Start time'].dt.day_name()
 df = df.rename(columns=COLUMNAS_RENAME_COMPACTOR)
 df['Reporter Name'] = df['Reporter Name'].str.split().str[0]
 
-# Filtrar registros de Waste Porterage
 df_compactor = df[df["What is the origin of the rubbish?"].str.contains(" Waste Porterage", case=False, na=False)]
 
-# ===== 2. KPI: promedio semanal =====
 reportes_por_semana = df_compactor.groupby(pd.Grouper(key="Start time", freq="W")).size()
 promedio_semanal = round(reportes_por_semana.mean())
 
-# Lista para guardar imágenes
 imagenes = []
 
-# ===== 3. Gráfica: Días con más reportes =====
 plt.figure(figsize=(8,5))
 sns.countplot(x="Day name", data=df_compactor, color="mediumblue",
               order=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"])
@@ -38,7 +33,7 @@ plt.savefig(graf1, bbox_inches="tight", dpi=300)
 imagenes.append(graf1)
 plt.close()
 
-# ===== 4. Gráfica: Horas más frecuentes =====
+
 df_compactor["hour"] = df_compactor["Start time"].dt.hour
 plt.figure(figsize=(8,5))
 sns.countplot(x="hour", data=df_compactor, color="aqua")
@@ -50,7 +45,6 @@ plt.savefig(graf2, bbox_inches="tight", dpi=300)
 imagenes.append(graf2)
 plt.close()
 
-# ===== 5. Gráfica: Reportes por trabajador =====
 plt.figure(figsize=(10,5))
 sns.countplot(y="Reporter Name", data=df_compactor, color="mediumblue",
               order=df_compactor["Reporter Name"].value_counts().index)
@@ -62,7 +56,6 @@ plt.savefig(graf3, bbox_inches="tight", dpi=300)
 imagenes.append(graf3)
 plt.close()
 
-# ===== 6. KPI Card =====
 fig, ax = plt.subplots(figsize=(6, 3))
 fig.patch.set_facecolor('#f8f9fa')
 ax.set_facecolor('#f8f9fa')
@@ -74,7 +67,6 @@ plt.savefig(kpi_img, bbox_inches="tight", dpi=300)
 imagenes.append(kpi_img)
 plt.close()
 
-# ===== 7. Exportar todo a PDF =====
 pdf_filename = "Reporte_Waste_Porterage.pdf"
 doc = SimpleDocTemplate(pdf_filename, pagesize=A4)
 
@@ -85,4 +77,5 @@ for img in imagenes:
 
 doc.build(elements)
 
-print(f"✅ PDF generado: {pdf_filename}")
+
+print(f"PDF generado: {pdf_filename}")
